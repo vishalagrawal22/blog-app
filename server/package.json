@@ -1,0 +1,40 @@
+{
+  "name": "blog-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "private": true,
+  "engines": {
+    "node": "16.15.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "serve": "nodemon -r dotenv/config app.js"
+  },
+  "dependencies": {
+    "async": "^3.2.4",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "express": "^4.18.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-validator": "^6.14.2",
+    "helmet": "^5.1.0",
+    "http-errors": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.4.0",
+    "morgan": "^1.10.0",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1",
+    "eslint": "^8.18.0",
+    "eslint-plugin-node": "^11.1.0",
+    "nodemon": "^2.0.16"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
