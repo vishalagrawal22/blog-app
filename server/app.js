@@ -9,6 +9,8 @@ const mongoSanitize = require("express-mongo-sanitize");
 
 const mongoose = require("mongoose");
 
+const models = require("./models");
+
 const app = express();
 
 app.use(xssClean());
@@ -21,6 +23,11 @@ app.use(compression());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
+
+app.use((req, res, next) => {
+  req.models = models;
+  next();
+});
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
