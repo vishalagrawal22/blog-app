@@ -110,6 +110,7 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
 app.use("/", routes.auth);
+app.use("/api/v1", routes.api);
 
 // 404 handler
 app.use((req, res, next) => {
