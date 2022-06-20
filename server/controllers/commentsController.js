@@ -1,0 +1,86 @@
+const { body, validationResult, param } = require("express-validator");
+const { Types } = require("mongoose");
+const passport = require("passport");
+
+const isAuthor = [
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    req.models.Comment.findById(req.params.commentId)
+      .populate("author", {
+        name: 1,
+      })
+      .exec((err, comment) => {
+        if (err) {
+          return next(err);
+        }
+
+        if (!comment) {
+          return res.status(404).json({
+            message: "comment not found",
+          });
+        }
+
+        if (comment.author.id !== req.user.id) {
+          return res.status(403).json({
+            message: "access to comment is forbidden",
+          });
+        }
+
+        req.data = {
+          comment,
+        };
+
+        next();
+      });
+  },
+];
+
+module.exports.handleUpdateComment = [
+  body("text")
+    .trim()
+    .isLength({
+      min: 1,
+    })
+    .withMessage("text is required"),
+  param("commentId").customSanitizer((value) => Types.ObjectId(value)),
+  isAuthor,
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+
+    const updatedData = { text: req.body.text };
+
+    req.models.Comment.findByIdAndUpdate(
+      req.params.commentId,
+      updatedData,
+      {
+        runValidators: true,
+      },
+      (err) => {
+        if (err) {
+          return next(err);
+        }
+
+        res.status(204).send();
+      }
+    );
+  },
+];
+
+module.exports.handleDeleteComment = [
+  param("commentId").customSanitizer((value) => Types.ObjectId(value)),
+  isAuthor,
+  (req, res, next) => {
+    req.models.Comment.findByIdAndDelete(req.params.commentId, (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      res.status(204).send();
+    });
+  },
+];
