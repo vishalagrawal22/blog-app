@@ -1,6 +1,7 @@
 const { body, param, validationResult } = require("express-validator");
 const { Types } = require("mongoose");
 const passport = require("passport");
+const async = require("async");
 
 module.exports.handleGetAllPublishedPosts = (req, res, next) => {
   req.models.Post.find({ published: true })
@@ -186,12 +187,71 @@ module.exports.handleDeletePost = [
   }),
   isAuthor,
   (req, res, next) => {
-    req.models.Post.findByIdAndDelete(req.params.postId, (err) => {
+    async.series(
+      [
+        (cb) =>
+          req.models.Comment.deleteMany({ post: req.params.postId }).exec(cb),
+        (cb) => req.models.Post.findByIdAndDelete(req.params.postId).exec(cb),
+      ],
+      (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.status(204).end();
+      }
+    );
+  },
+];
+
+module.exports.handleGetComments = [
+  param("postId").customSanitizer((value) => {
+    return Types.ObjectId(value);
+  }),
+  (req, res, next) => {
+    req.models.Comment.find({ post: req.params.postId })
+      .populate("author", {
+        name: 1,
+      })
+      .exec((err, comments) => {
+        if (err) {
+          return next(err);
+        }
+
+        res.status(200).json({
+          comments: comments.map((comment) =>
+            comment.toObject({ virtuals: true })
+          ),
+        });
+      });
+  },
+];
+
+module.exports.handleCreateComment = [
+  param("postId").customSanitizer((value) => {
+    return Types.ObjectId(value);
+  }),
+  body("text").trim().isLength({ min: 1 }).withMessage("text is required"),
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    const comment = new req.models.Comment({
+      author: req.user.id,
+      post: req.params.postId,
+      text: req.body.text,
+    });
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+
+    comment.save((err) => {
       if (err) {
         return next(err);
       }
 
-      res.status(204).end();
+      res.status(201).json();
     });
   },
 ];

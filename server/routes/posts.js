@@ -11,4 +11,7 @@ router.get("/:postId", postsController.handleGetPost);
 router.put("/:postId", postsController.handleUpdatePost);
 router.delete("/:postId", postsController.handleDeletePost);
 
+router.get("/:postId/comments", postsController.handleGetComments);
+router.post("/:postId/comments", postsController.handleCreateComment);
+
 module.exports = router;
