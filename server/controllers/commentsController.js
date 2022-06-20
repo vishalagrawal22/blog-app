@@ -2,8 +2,41 @@ const { body, validationResult, param } = require("express-validator");
 const { Types } = require("mongoose");
 const passport = require("passport");
 
-const isAuthor = [
+const isPostAuthorOrIsPublished = [
   passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    req.models.Comment.findById(req.params.commentId)
+      .populate("post", {
+        author: 1,
+        published: 1,
+      })
+      .exec((err, comment) => {
+        if (err) {
+          return next(err);
+        }
+
+        if (!comment) {
+          return res.status(404).json({
+            message: "comment not found",
+          });
+        }
+
+        if (comment.post.published) {
+          return next();
+        }
+
+        if (comment.post.author.id === req.user.id) {
+          return next();
+        }
+
+        return res.status(403).json({
+          message: "access to comment is forbidden",
+        });
+      });
+  },
+];
+
+const isAuthor = [
   (req, res, next) => {
     req.models.Comment.findById(req.params.commentId)
       .populate("author", {
@@ -43,6 +76,7 @@ module.exports.handleUpdateComment = [
     })
     .withMessage("text is required"),
   param("commentId").customSanitizer((value) => Types.ObjectId(value)),
+  isPostAuthorOrIsPublished,
   isAuthor,
   (req, res, next) => {
     const errors = validationResult(req);
@@ -73,6 +107,7 @@ module.exports.handleUpdateComment = [
 
 module.exports.handleDeleteComment = [
   param("commentId").customSanitizer((value) => Types.ObjectId(value)),
+  isPostAuthorOrIsPublished,
   isAuthor,
   (req, res, next) => {
     req.models.Comment.findByIdAndDelete(req.params.commentId, (err) => {

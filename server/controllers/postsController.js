@@ -55,6 +55,50 @@ const isAuthor = [
   },
 ];
 
+const isAuthorOrIsPublished = [
+  (req, res, next) => {
+    req.models.Post.findById(req.params.postId.toString())
+      .populate("author", {
+        name: 1,
+      })
+      .exec((err, post) => {
+        if (err) {
+          return next(err);
+        }
+
+        if (!post) {
+          return res.status(404).json({
+            message: "post not found",
+          });
+        }
+
+        if (post.published) {
+          return next();
+        }
+
+        passport.authenticate("jwt", { session: false }, (err) => {
+          if (err) {
+            return next(err);
+          }
+
+          req.login((err) => {
+            if (err) {
+              return next(err);
+            }
+
+            if (post.author.id === req.user.id) {
+              return next();
+            }
+
+            return res.status(403).json({
+              message: "access to comment is forbidden",
+            });
+          });
+        })(req, res);
+      });
+  },
+];
+
 const isPresent = (obj, key) => {
   return Object.prototype.hasOwnProperty.call(obj, key);
 };
@@ -207,6 +251,7 @@ module.exports.handleGetComments = [
   param("postId").customSanitizer((value) => {
     return Types.ObjectId(value);
   }),
+  isAuthorOrIsPublished,
   (req, res, next) => {
     req.models.Comment.find({ post: req.params.postId })
       .populate("author", {
@@ -231,7 +276,15 @@ module.exports.handleCreateComment = [
     return Types.ObjectId(value);
   }),
   body("text").trim().isLength({ min: 1 }).withMessage("text is required"),
-  passport.authenticate("jwt", { session: false }),
+  isAuthorOrIsPublished,
+  (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Unauthorised",
+      });
+    }
+    next();
+  },
   (req, res, next) => {
     const comment = new req.models.Comment({
       author: req.user.id,
