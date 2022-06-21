@@ -8,6 +8,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     unique: true,
+    sparse: true,
     validate: [validator.isEmail, "Invalid email"],
   },
   password: { type: String, required: true },
