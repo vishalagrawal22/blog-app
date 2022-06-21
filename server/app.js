@@ -7,6 +7,7 @@ const createHttpError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const xssClean = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
+const cors = require("cors");
 
 const mongoose = require("mongoose");
 
@@ -84,6 +85,11 @@ const routes = require("./routes");
 
 const app = express();
 
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+  })
+);
 app.use(xssClean());
 app.use(
   mongoSanitize({
