@@ -35,20 +35,24 @@ module.exports.getUserPosts = [
           }).exec(cb);
         },
         private: (cb) => {
-          passport.authenticate("jwt", { session: false }, (err, user) => {
-            if (err) {
-              return cb(err);
-            }
+          passport.authenticate(
+            "jwt",
+            { failWithError: true, session: false },
+            (err, user) => {
+              if (err) {
+                return cb(err);
+              }
 
-            if (!user || !user._id.equals(req.params.userId)) {
-              return cb(null, []);
-            }
+              if (!user || !user._id.equals(req.params.userId)) {
+                return cb(null, []);
+              }
 
-            req.models.Post.find({
-              published: false,
-              author: req.params.userId,
-            }).exec(cb);
-          })(req, res);
+              req.models.Post.find({
+                published: false,
+                author: req.params.userId,
+              }).exec(cb);
+            }
+          )(req, res);
         },
       },
       (err, results) => {
@@ -82,23 +86,28 @@ module.exports.getUserComments = [
           (comment) => comment.post.published
         );
 
-        passport.authenticate("jwt", { session: false }, (err, user) => {
-          if (err) {
-            return next(err);
-          }
+        passport.authenticate(
+          "jwt",
+          { failWithError: true, session: false },
+          (err, user) => {
+            if (err) {
+              return next(err);
+            }
 
-          if (user) {
-            const hiddenPostComments = comments.filter(
-              (comment) =>
-                !comment.post.published && comment.post.author.equals(user._id)
-            );
-            filteredComments.push(...hiddenPostComments);
-          }
+            if (user) {
+              const hiddenPostComments = comments.filter(
+                (comment) =>
+                  !comment.post.published &&
+                  comment.post.author.equals(user._id)
+              );
+              filteredComments.push(...hiddenPostComments);
+            }
 
-          res.status(200).json({
-            comments: filteredComments,
-          });
-        })(req, res);
+            res.status(200).json({
+              comments: filteredComments,
+            });
+          }
+        )(req, res);
       });
   },
 ];

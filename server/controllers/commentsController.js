@@ -3,7 +3,7 @@ const { Types } = require("mongoose");
 const passport = require("passport");
 
 const isPostAuthorOrIsPublished = [
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { failWithError: true, session: false }),
   (req, res, next) => {
     req.models.Comment.findById(req.params.commentId)
       .populate("post", {
@@ -82,6 +82,9 @@ module.exports.handleUpdateComment = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
+        comment: {
+          text: req.body.text,
+        },
         errors: errors.array(),
       });
     }
@@ -99,7 +102,7 @@ module.exports.handleUpdateComment = [
           return next(err);
         }
 
-        res.status(204).send();
+        res.status(204).json();
       }
     );
   },
@@ -115,7 +118,7 @@ module.exports.handleDeleteComment = [
         return next(err);
       }
 
-      res.status(204).send();
+      res.status(204).json();
     });
   },
 ];

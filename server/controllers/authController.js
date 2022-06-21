@@ -33,26 +33,30 @@ const sendUser = (req, res, userId) => {
 };
 
 module.exports.handleLogin = (req, res, next) => {
-  passport.authenticate("local", { session: false }, (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-
-    if (!user) {
-      return next({
-        status: 401,
-        message: info,
-      });
-    }
-
-    req.login(user, { session: false }, (err) => {
+  passport.authenticate(
+    "local",
+    { failWithError: true, session: false },
+    (err, user, info) => {
       if (err) {
         return next(err);
       }
 
-      return sendUser(req, res, user.id);
-    });
-  })(req, res);
+      if (!user) {
+        return next({
+          status: 401,
+          message: info,
+        });
+      }
+
+      req.login(user, { session: false }, (err) => {
+        if (err) {
+          return next(err);
+        }
+
+        return sendUser(req, res, user.id);
+      });
+    }
+  )(req, res);
 };
 
 module.exports.handleRegister = [
@@ -159,5 +163,5 @@ module.exports.handleGenerateAccessToken = (req, res, next) => {
 };
 
 module.exports.handleLogout = (req, res) => {
-  res.status(204).clearCookie("refreshToken").end();
+  res.status(204).clearCookie("refreshToken").json();
 };

@@ -23,7 +23,7 @@ module.exports.handleGetAllPublishedPosts = (req, res, next) => {
 };
 
 const isAuthor = [
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { failWithError: true, session: false }),
   (req, res, next) => {
     req.models.Post.findById(req.params.postId)
       .populate("author", {
@@ -76,25 +76,29 @@ const isAuthorOrIsPublished = [
           return next();
         }
 
-        passport.authenticate("jwt", { session: false }, (err) => {
-          if (err) {
-            return next(err);
-          }
-
-          req.login((err) => {
+        passport.authenticate(
+          "jwt",
+          { failWithError: true, session: false },
+          (err) => {
             if (err) {
               return next(err);
             }
 
-            if (post.author.id === req.user.id) {
-              return next();
-            }
+            req.login((err) => {
+              if (err) {
+                return next(err);
+              }
 
-            return res.status(403).json({
-              message: "access to comment is forbidden",
+              if (post.author.id === req.user.id) {
+                return next();
+              }
+
+              return res.status(403).json({
+                message: "access to comment is forbidden",
+              });
             });
-          });
-        })(req, res);
+          }
+        )(req, res);
       });
   },
 ];
@@ -135,7 +139,7 @@ module.exports.handleGetPost = [
 ];
 
 module.exports.handleCreatePost = [
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { failWithError: true, session: false }),
   body("title")
     .trim()
     .isLength({ min: 1, max: 100 })
@@ -160,6 +164,7 @@ module.exports.handleCreatePost = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
+        post: postData,
         errors: errors.array(),
       });
     } else {
@@ -241,7 +246,7 @@ module.exports.handleDeletePost = [
         if (err) {
           return next(err);
         }
-        return res.status(204).end();
+        return res.status(204).json();
       }
     );
   },
@@ -295,6 +300,9 @@ module.exports.handleCreateComment = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
+        comment: {
+          text: req.body.text,
+        },
         errors: errors.array(),
       });
     }

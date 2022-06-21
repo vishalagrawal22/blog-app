@@ -114,7 +114,7 @@ app.use("/api/v1", routes.api);
 
 // 404 handler
 app.use((req, res, next) => {
-  next(createHttpError(404));
+  next(createHttpError(404, "route not found"));
 });
 
 // error handler
@@ -123,10 +123,6 @@ app.use((err, req, res, next) => {
   const response = {
     message: err.message,
   };
-
-  if (app.get("env") === "development") {
-    response.error = err;
-  }
 
   res.status(err.status || 500);
   res.json(response);
