@@ -70,10 +70,8 @@ module.exports.handleLogin = (req, res, next) => {
 module.exports.handleRegister = [
   body("username")
     .trim()
-    .exists({
-      checkFalsy: true,
-    })
-    .withMessage("username is required")
+    .isLength({ min: 1, max: 100 })
+    .withMessage("username should be 1-100 characters long")
     .custom(
       (value, { req }) =>
         new Promise((resolve, reject) => {
@@ -91,9 +89,7 @@ module.exports.handleRegister = [
         })
     ),
   body("email")
-    .optional({
-      nullable: true,
-    })
+    .optional()
     .trim()
     .normalizeEmail()
     .isEmail()
@@ -116,9 +112,7 @@ module.exports.handleRegister = [
     ),
   body("password")
     .trim()
-    .exists({
-      checkFalsy: true,
-    })
+    .isLength({ min: 1 })
     .withMessage("password is required"),
   (req, res, next) => {
     const errors = validationResult(req);
@@ -137,11 +131,16 @@ module.exports.handleRegister = [
         return next(err);
       }
 
-      const user = new req.models.User({
+      const userData = {
         name: req.body.username,
-        email: req.body.email,
         password: hashPassword,
-      });
+      };
+
+      if (Object.prototype.hasOwnProperty.call(req.body, "email")) {
+        userData.email = req.body.email;
+      }
+
+      const user = new req.models.User(userData);
 
       user.save((err) => {
         if (err) {
