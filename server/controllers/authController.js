@@ -3,23 +3,31 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
-const createRefreshToken = (userId) => {
-  const refreshToken = jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: process.env.REFRESH_TOKEN_VALID_TIME,
-  });
+const createRefreshToken = ({ userId, userName }) => {
+  const refreshToken = jwt.sign(
+    { userId, userName },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_VALID_TIME,
+    }
+  );
   return refreshToken;
 };
 
-const createAccessToken = (userId) => {
-  const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: process.env.ACCESS_TOKEN_VALID_TIME,
-  });
+const createAccessToken = ({ userId, userName }) => {
+  const accessToken = jwt.sign(
+    { userId, userName },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_VALID_TIME,
+    }
+  );
   return accessToken;
 };
 
-const sendUser = (req, res, userId) => {
-  const refreshToken = createRefreshToken(userId);
-  const accessToken = createAccessToken(userId);
+const sendUser = (req, res, userData) => {
+  const refreshToken = createRefreshToken(userData);
+  const accessToken = createAccessToken(userData);
   const secureCookie = req.app.get("env") === "development" ? false : true;
   return res
     .status(200)
@@ -53,7 +61,10 @@ module.exports.handleLogin = (req, res, next) => {
           return next(err);
         }
 
-        return sendUser(req, res, user.id);
+        return sendUser(req, res, {
+          userId: user.id,
+          userName: user.name,
+        });
       });
     }
   )(req, res);
@@ -140,7 +151,10 @@ module.exports.handleRegister = [
           return next(err);
         }
 
-        return sendUser(req, res, user.id);
+        return sendUser(req, res, {
+          userId: user.id,
+          userName: user.name,
+        });
       });
     });
   },
@@ -148,15 +162,19 @@ module.exports.handleRegister = [
 
 module.exports.handleGenerateAccessToken = (req, res, next) => {
   const { refreshToken } = req.cookies;
-  const valid = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-  if (!valid) {
+  const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+  if (!user) {
     return next({
       status: 401,
       message: "Invalid refresh token",
     });
   }
 
-  const accessToken = createAccessToken(valid.userId);
+  const { userId, userName } = user;
+  const accessToken = createAccessToken({
+    userId,
+    userName,
+  });
   res.json({
     accessToken,
   });
