@@ -50,10 +50,7 @@ module.exports.handleLogin = (req, res, next) => {
       }
 
       if (!user) {
-        return next({
-          status: 401,
-          message: info,
-        });
+        return res.status(401).json(info);
       }
 
       req.login(user, { session: false }, (err) => {
@@ -160,14 +157,13 @@ module.exports.handleRegister = [
   },
 ];
 
-module.exports.handleGenerateAccessToken = (req, res, next) => {
+module.exports.handleGenerateAccessToken = (req, res) => {
   jwt.verify(
     req.cookies.refreshToken,
     process.env.REFRESH_TOKEN_SECRET,
     (err, user) => {
       if (err || !user) {
-        return next({
-          status: 401,
+        return res.status(401).clearCookie("refreshToken").json({
           message: "Invalid refresh token",
         });
       }
