@@ -161,23 +161,28 @@ module.exports.handleRegister = [
 ];
 
 module.exports.handleGenerateAccessToken = (req, res, next) => {
-  const { refreshToken } = req.cookies;
-  const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-  if (!user) {
-    return next({
-      status: 401,
-      message: "Invalid refresh token",
-    });
-  }
+  jwt.verify(
+    req.cookies.refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    (err, user) => {
+      if (err || !user) {
+        return next({
+          status: 401,
+          message: "Invalid refresh token",
+        });
+      }
 
-  const { userId, userName } = user;
-  const accessToken = createAccessToken({
-    userId,
-    userName,
-  });
-  res.json({
-    accessToken,
-  });
+      const { userId, userName } = user;
+      const accessToken = createAccessToken({
+        userId,
+        userName,
+      });
+
+      res.json({
+        accessToken,
+      });
+    }
+  );
 };
 
 module.exports.handleLogout = (req, res) => {
