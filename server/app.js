@@ -84,24 +84,26 @@ const models = require("./models");
 const routes = require("./routes");
 
 const app = express();
-
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );
+
+app.use(helmet());
+app.use(compression());
+app.use(morgan("dev"));
+
+app.use(express.json());
+app.use(cookieParser());
+
 app.use(xssClean());
 app.use(
   mongoSanitize({
     allowDots: true,
   })
 );
-app.use(cookieParser());
-app.use(compression());
-app.use(helmet());
-app.use(morgan("dev"));
-app.use(express.json());
 
 app.use((req, res, next) => {
   req.models = models;
