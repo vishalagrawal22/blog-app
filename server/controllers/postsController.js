@@ -126,14 +126,14 @@ module.exports.handleGetPost = [
         }
 
         return res.status(200).json({
-          post,
+          post: post.toObject({ virtuals: true }),
         });
       });
   },
   isAuthor,
   (req, res) => {
     return res.status(200).json({
-      post: req.data.post,
+      post: req.data.post.toObject({ virtuals: true }),
     });
   },
 ];
