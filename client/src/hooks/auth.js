@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import jwtDecode from "jwt-decode";
 
-export function useUser() {
+export function useCurrentUser() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 

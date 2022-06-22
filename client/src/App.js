@@ -1,12 +1,12 @@
 import { Outlet, useNavigate } from "react-router-dom";
 
 import UserContext from "./UserContext";
-import { useUser } from "./hooks/auth";
+import { useCurrentUser } from "./hooks/auth";
 import Header from "./components/Header";
 import addPostImageSrc from "./images/add.svg";
 
 function App() {
-  const { user, isLoading, addAccessToken, clearAccessToken } = useUser();
+  const { user, isLoading, addAccessToken, clearAccessToken } = useCurrentUser();
   const navigate = useNavigate();
   return (
     <>

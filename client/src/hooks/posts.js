@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useUser } from "./auth";
+import { useState, useEffect, useContext } from "react";
+import UserContext from "../UserContext";
 
 export function usePosts(url) {
-  const { user, isLoading: userLoading } = useUser();
+  const { user, isLoading: userLoading } = useContext(UserContext);
   const [posts, setPosts] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -47,7 +47,7 @@ export function usePosts(url) {
 }
 
 export function usePost(postId) {
-  const { user, isLoading: userLoading } = useUser();
+  const { user, isLoading: userLoading } = useContext(UserContext);
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

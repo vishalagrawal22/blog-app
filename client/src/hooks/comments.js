@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useUser } from "./auth";
+import { useState, useEffect, useContext } from "react";
+import UserContext from "../UserContext";
 
 export function useComments(url) {
-  const { user, isLoading: userLoading } = useUser();
+  const { user, isLoading: userLoading } = useContext(UserContext);
   const [comments, setComments] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
