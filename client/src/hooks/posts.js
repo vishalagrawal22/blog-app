@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useUser } from "./auth";
 
 export function usePosts(url) {
-  const { user } = useUser();
+  const { user, isLoading: userLoading } = useUser();
   const [posts, setPosts] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,11 +34,61 @@ export function usePosts(url) {
       setIsLoading(false);
     }
 
-    fetchData();
-  }, [url, user]);
+    if (!userLoading) {
+      fetchData();
+    }
+  }, [url, user, userLoading]);
 
   return {
     posts,
+    error,
+    isLoading,
+  };
+}
+
+export function usePost(postId) {
+  const { user, isLoading: userLoading } = useUser();
+  const [post, setPost] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const headers = {};
+      if (user) {
+        headers.Authorization = `Bearer ${user.accessToken}`;
+      }
+
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/posts/${postId}`,
+          {
+            credentials: "include",
+            headers,
+          }
+        );
+
+        const data = await response.json();
+        if (response.ok) {
+          const { post } = data;
+          setPost(post);
+        } else {
+          setError(data);
+        }
+      } catch (err) {
+        console.error("Network error: ", err);
+        setError(err);
+      }
+      setIsLoading(false);
+    }
+
+    if (!userLoading) {
+      fetchData();
+    }
+  }, [postId, user, userLoading]);
+
+  return {
+    post,
     error,
     isLoading,
   };
