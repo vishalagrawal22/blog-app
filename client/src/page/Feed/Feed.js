@@ -1,5 +1,5 @@
 import { usePosts } from "../../hooks/posts";
-import PostCardList from "../../components/PostCardList/PostCardList";
+import PostCardList from "../../components/PostCardList";
 
 export default function Feed() {
   const { posts, isLoading, error } = usePosts(
