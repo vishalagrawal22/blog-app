@@ -71,7 +71,7 @@ export default function CommentItem({ comment }) {
           <h6>{comment.createdAt}</h6>
         </div>
         <div className="card-body">
-          <p>{comment.text}</p>
+          <div style={{ whiteSpace: "pre-wrap" }}>{comment.text}</div>
         </div>
       </div>
     );
