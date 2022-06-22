@@ -79,12 +79,12 @@ const isAuthorOrIsPublished = [
         passport.authenticate(
           "jwt",
           { failWithError: true, session: false },
-          (err) => {
+          (err, user) => {
             if (err) {
               return next(err);
             }
 
-            req.login((err) => {
+            req.login(user, { session: false }, (err) => {
               if (err) {
                 return next(err);
               }
