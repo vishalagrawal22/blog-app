@@ -61,7 +61,9 @@ module.exports.getUserPosts = [
         }
 
         res.status(200).json({
-          posts: results.public.concat(results.private),
+          posts: results.public
+            .concat(results.private)
+            .map((post) => post.toObject({ virtuals: true })),
         });
       }
     );
