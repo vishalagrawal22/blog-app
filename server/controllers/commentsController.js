@@ -25,7 +25,9 @@ const isPostAuthorOrIsPublished = [
           return next();
         }
 
-        if (comment.post.author.id === req.user.id) {
+        console.log(req.user);
+        console.log(comment.post.author);
+        if (comment.post.author._id.equals(req.user._id)) {
           return next();
         }
 
