@@ -12,7 +12,7 @@ function CommentActionButtons({ comment, setEditMode }) {
     <div
       className="mb-1 d-flex justify-content-end"
       style={{ height: "1.5rem" }}>
-      {user && user.id === comment.author.id && (
+      {user && user.id === (comment.author.id || comment.author) && (
         <>
           <img
             src={updatePostImageSrc}
@@ -29,7 +29,7 @@ function CommentActionButtons({ comment, setEditMode }) {
             onClick={() => {
               deleteComment(
                 (err) => {
-                  alert(err);
+                  alert(err.message || err.msg);
                 },
                 user,
                 comment

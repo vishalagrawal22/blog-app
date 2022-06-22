@@ -27,7 +27,7 @@ function PostActionButtons({ post }) {
     <div
       className="mb-1 d-flex justify-content-end"
       style={{ height: "1.5rem" }}>
-      {user && user.id === post.author.id && (
+      {user && user.id === (post.author.id || post.author) && (
         <>
           <img
             src={updatePostImageSrc}
@@ -68,9 +68,11 @@ export default function PostCard({ post }) {
           <PostActionButtons post={post} />
           <h5 className="card-title">{post.title}</h5>
           <div className="d-flex justify-content-between">
-            <h6 className="card-subtitle mb-2 text-muted">
-              {post.author.name}
-            </h6>
+            {post.author.name && (
+              <h6 className="card-subtitle mb-2 text-muted">
+                {post.author.name}
+              </h6>
+            )}
             <h6 className="card-subtitle mb-2 text-muted">{post.createdAt}</h6>
           </div>
         </div>
@@ -78,9 +80,11 @@ export default function PostCard({ post }) {
           {getShortDescription(post.description)}
         </p>
         <div className="d-flex justify-content-center align-items-center">
-          <a href={post.author.url} className="card-link">
-            View author
-          </a>
+          {post.author.name && (
+            <a href={post.author.url} className="card-link">
+              View author
+            </a>
+          )}
           <a href={post.url} className="card-link">
             View post
           </a>

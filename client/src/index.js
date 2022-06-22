@@ -9,8 +9,9 @@ import RegisterForm from "./components/RegisterForm/RegisterForm";
 
 import Feed from "./page/Feed";
 import Post from "./page/Post";
-
+import User from "./page/User";
 import UpdatePost from "./page/UpdatePost";
+
 import { createPost } from "./utils/posts";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -28,6 +29,7 @@ root.render(
             element={<PostForm onSubmit={createPost} />}
           />
           <Route path="/posts/:postId/update" element={<UpdatePost />} />
+          <Route path="/users/:userId" element={<User />} />
           <Route
             path="*"
             element={<div className="p-3">Route not found!</div>}
