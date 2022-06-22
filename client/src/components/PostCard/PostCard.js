@@ -62,7 +62,7 @@ function PostActionButtons({ post }) {
 
 export default function PostCard({ post }) {
   return (
-    <div className="card m-3 pb-4" style={{ width: "20rem", height: "22rem" }}>
+    <div className="card m-3 pb-4" style={{ width: "20rem" }}>
       <div className="card-body d-flex flex-column justify-content-between">
         <div>
           <PostActionButtons post={post} />
@@ -74,7 +74,7 @@ export default function PostCard({ post }) {
             <h6 className="card-subtitle mb-2 text-muted">{post.createdAt}</h6>
           </div>
         </div>
-        <p className="card-text mt-2">
+        <p className="card-text mt-2" style={{ whiteSpace: "pre-wrap" }}>
           {getShortDescription(post.description)}
         </p>
         <div className="d-flex justify-content-center align-items-center">
