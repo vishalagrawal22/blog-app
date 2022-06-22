@@ -282,6 +282,7 @@ module.exports.handleCreateComment = [
   }),
   body("text").trim().isLength({ min: 1 }).withMessage("text is required"),
   isAuthorOrIsPublished,
+  passport.authenticate("jwt", { failWithError: true, session: false }),
   (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({

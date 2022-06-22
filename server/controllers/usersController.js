@@ -104,7 +104,9 @@ module.exports.getUserComments = [
             }
 
             res.status(200).json({
-              comments: filteredComments,
+              comments: filteredComments.map((comment) =>
+                comment.toObject({ virtuals: true })
+              ),
             });
           }
         )(req, res);

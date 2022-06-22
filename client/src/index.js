@@ -6,7 +6,10 @@ import App from "./App";
 import LoginForm from "./components/LoginForm";
 import PostForm from "./components/PostForm";
 import RegisterForm from "./components/RegisterForm/RegisterForm";
-import Feed from "./page/Feed/Feed";
+
+import Feed from "./page/Feed";
+import Post from "./page/Post";
+
 import UpdatePost from "./page/UpdatePost";
 import { createPost } from "./utils/posts";
 
@@ -19,6 +22,7 @@ root.render(
           <Route index element={<Feed />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
+          <Route path="/posts/:postId" element={<Post />} />
           <Route
             path="/posts/create"
             element={<PostForm onSubmit={createPost} />}
