@@ -24,15 +24,13 @@ function PostActionButtons({ post }) {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   return (
-    <div
-      className="mb-1 d-flex justify-content-end"
-      style={{ height: "1.5rem" }}>
+    <>
       {user && user.id === (post.author.id || post.author) && (
         <>
           <img
             src={updatePostImageSrc}
             alt="update post"
-            className="me-3 h-100"
+            className="me-3 h-100 ms-auto"
             onClick={() => {
               navigate(`/posts/${post.id}/update`);
             }}
@@ -56,7 +54,7 @@ function PostActionButtons({ post }) {
           />
         </>
       )}
-    </div>
+    </>
   );
 }
 
@@ -65,7 +63,10 @@ export default function PostCard({ post }) {
     <div className="flex-grow-1 card m-3 pb-4" style={{ width: "20rem" }}>
       <div className="card-body d-flex flex-column justify-content-between">
         <div>
-          <PostActionButtons post={post} />
+          <div className="mb-1 d-flex" style={{ height: "1.5rem" }}>
+            {!post.published && <h5 className="text-info">Private post</h5>}
+            <PostActionButtons post={post} />
+          </div>
           <h5 className="card-title">{post.title}</h5>
           <div className="d-flex justify-content-between">
             {post.author.name && (

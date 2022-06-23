@@ -5,9 +5,6 @@ const async = require("async");
 
 module.exports.handleGetAllPublishedPosts = (req, res, next) => {
   req.models.Post.find({ published: true })
-    .select({
-      published: 0,
-    })
     .populate("author", {
       name: 1,
     })
