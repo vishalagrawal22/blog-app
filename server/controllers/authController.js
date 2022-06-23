@@ -33,6 +33,7 @@ const sendUser = (req, res, userData) => {
     .status(200)
     .cookie("refreshToken", refreshToken, {
       secure: secureCookie,
+      sameSite: "none",
       httpOnly: true,
     })
     .json({
