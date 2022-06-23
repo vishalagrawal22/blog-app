@@ -62,7 +62,7 @@ function PostActionButtons({ post }) {
 
 export default function PostCard({ post }) {
   return (
-    <div className="card m-3 pb-4" style={{ width: "20rem" }}>
+    <div className="flex-grow-1 card m-3 pb-4" style={{ width: "20rem" }}>
       <div className="card-body d-flex flex-column justify-content-between">
         <div>
           <PostActionButtons post={post} />

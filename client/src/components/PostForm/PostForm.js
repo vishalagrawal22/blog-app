@@ -31,7 +31,10 @@ export default function PostForm({ post, onSubmit }) {
 
   return (
     <section className="flex-grow-1 d-flex justify-content-center align-items-center">
-      <form className="w-50" onSubmit={handleSubmit}>
+      <form
+        className="w-50"
+        style={{ minWidth: "20rem" }}
+        onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="title" className="form-label">
             Title
