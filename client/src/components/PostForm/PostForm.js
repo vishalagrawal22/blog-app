@@ -1,10 +1,13 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import UserContext from "../../UserContext";
 
 export default function PostForm({ post, onSubmit }) {
   const { user } = useContext(UserContext);
+  const [status, setStatus] = useState("write");
   const [title, setTitle] = useState(post?.title || "");
   const [description, setDescription] = useState(post?.description || "");
   const [published, setPublished] = useState(post?.published ? true : false);
@@ -53,17 +56,70 @@ export default function PostForm({ post, onSubmit }) {
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="description" className="form-label">
+          <label
+            htmlFor="description"
+            className="form-label"
+            aria-describedby="description-help">
             Description
           </label>
-          <textarea
-            className="form-control"
-            style={{ height: "20rem" }}
-            id="description"
-            onChange={(event) => {
-              setDescription(event.target.value);
-            }}
-            value={description}></textarea>
+          <ul id="description-help" className="form-text">
+            <li>Github flavoured markdown(GFM) is supported.</li>
+            <li>
+              The content before the first newline will be shown in post cards
+            </li>
+          </ul>
+          <ul className="nav nav-pills mt-3 mb-2">
+            <li className="nav-item">
+              <button
+                type="button"
+                className={
+                  "nav-link " +
+                  (status === "write" ? "text-white active" : "text-black")
+                }
+                onClick={() => {
+                  setStatus("write");
+                }}>
+                Write
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                type="button"
+                className={`nav-link text-black ${
+                  "nav-link " +
+                  (status === "preview" ? "text-white active" : "text-black")
+                } && "active"`}
+                onClick={() => {
+                  setStatus("preview");
+                }}>
+                Preview
+              </button>
+            </li>
+          </ul>
+          {status === "write" ? (
+            <textarea
+              className="form-control"
+              style={{ height: "20rem" }}
+              id="description"
+              onChange={(event) => {
+                setDescription(event.target.value);
+              }}
+              value={description}></textarea>
+          ) : (
+            <div
+              style={{
+                height: "20rem",
+                backgroundColor: "#fff",
+                backgroundClip: "padding-box",
+                padding: "0.375rem 0.75rem",
+                border: "1px solid #ced4da",
+                overflow: "auto",
+              }}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {description}
+              </ReactMarkdown>
+            </div>
+          )}
         </div>
         <div className="mb-3">
           <div className="form-check">

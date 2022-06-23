@@ -1,22 +1,22 @@
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import UserContext from "../../UserContext";
 
 import updatePostImageSrc from "../../images/update.svg";
 import deletePostImageSrc from "../../images/delete.svg";
-import { useNavigate } from "react-router-dom";
+
 import { deletePost } from "../../utils/posts";
 
 function getShortDescription(description) {
-  let spaceIndex = description.indexOf(" ", 100);
-  if (description.length <= 100 || spaceIndex === -1) {
+  let newLineIndex = description.indexOf("\n");
+  if (newLineIndex === -1) {
     return description;
   } else {
-    const shortDescription = description.substr(0, spaceIndex);
-    if (shortDescription.endsWith(".")) {
-      return shortDescription + "..";
-    } else {
-      return shortDescription + "...";
-    }
+    const shortDescription = description.substr(0, newLineIndex);
+    return shortDescription;
   }
 }
 
@@ -60,7 +60,7 @@ function PostActionButtons({ post }) {
 
 export default function PostCard({ post }) {
   return (
-    <div className="flex-grow-1 card m-3 pb-4" style={{ width: "20rem" }}>
+    <div className="card m-3 pb-4" style={{ width: "25rem" }}>
       <div className="card-body d-flex flex-column justify-content-between">
         <div>
           <div className="mb-1 d-flex" style={{ height: "1.5rem" }}>
@@ -77,10 +77,14 @@ export default function PostCard({ post }) {
             <h6 className="card-subtitle mb-2 text-muted">{post.createdAt}</h6>
           </div>
         </div>
-        <p className="card-text mt-2" style={{ whiteSpace: "pre-wrap" }}>
-          {getShortDescription(post.description)}
-        </p>
-        <div className="d-flex justify-content-center align-items-center">
+        <div
+          className="card-text mt-2"
+          style={{ height: "10rem", overflow: "auto" }}>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {getShortDescription(post.description)}
+          </ReactMarkdown>
+        </div>
+        <div className="d-flex justify-content-center align-items-center mt-3">
           {post.author.name && (
             <a href={post.author.url} className="card-link">
               View author

@@ -1,5 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import UserContext from "../../UserContext";
 import { deletePost } from "../../utils/posts";
@@ -19,7 +21,11 @@ export default function PostItem({ post }) {
         </a>{" "}
         (Posted on {post.createdAt})
       </h5>
-      <div style={{ whiteSpace: "pre-wrap" }}>{post.description}</div>
+      <div className="w-100">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {post.description}
+        </ReactMarkdown>
+      </div>
       {user.id === (post.author.id || post.author) && (
         <div className="d-flex mt-3">
           <button
