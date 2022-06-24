@@ -26,7 +26,7 @@ export default function PostItem({ post }) {
           {post.description}
         </ReactMarkdown>
       </div>
-      {user.id === (post.author.id || post.author) && (
+      {user && user.id === (post.author.id || post.author) && (
         <div className="d-flex mt-3">
           <button
             className="btn btn-primary me-3"
