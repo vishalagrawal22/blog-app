@@ -28,12 +28,18 @@ const createAccessToken = ({ userId, userName }) => {
 const sendUser = (req, res, userData) => {
   const refreshToken = createRefreshToken(userData);
   const accessToken = createAccessToken(userData);
-  const secureCookie = req.app.get("env") === "development" ? false : true;
+  const productionCookie =
+    req.app.get("env") === "development"
+      ? {}
+      : {
+          secure: true,
+          sameSite: "none",
+        };
+
   return res
     .status(200)
     .cookie("refreshToken", refreshToken, {
-      secure: secureCookie,
-      sameSite: "none",
+      ...productionCookie,
       httpOnly: true,
     })
     .json({
