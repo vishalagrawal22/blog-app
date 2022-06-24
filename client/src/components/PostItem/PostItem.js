@@ -21,7 +21,7 @@ export default function PostItem({ post }) {
         </Link>
         (Posted on {post.createdAt})
       </h5>
-      <div className="w-100">
+      <div className="w-100 img-match-container">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {post.description}
         </ReactMarkdown>

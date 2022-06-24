@@ -1,5 +1,7 @@
 import { Outlet } from "react-router-dom";
 
+import "./App.css";
+
 import UserContext from "./UserContext";
 import { useCurrentUser } from "./hooks/auth";
 import Header from "./components/Header";

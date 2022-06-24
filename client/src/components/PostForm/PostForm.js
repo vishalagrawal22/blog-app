@@ -107,6 +107,7 @@ export default function PostForm({ post, onSubmit }) {
               value={description}></textarea>
           ) : (
             <div
+              className="img-match-container"
               style={{
                 height: "20rem",
                 backgroundColor: "#fff",

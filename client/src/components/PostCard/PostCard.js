@@ -78,7 +78,7 @@ export default function PostCard({ post }) {
           </div>
         </div>
         <div
-          className="card-text mt-2"
+          className="card-text mt-2 img-match-continer"
           style={{ height: "10rem", overflow: "auto" }}>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {getShortDescription(post.description)}
