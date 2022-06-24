@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import updatePostImageSrc from "../../images/update.svg";
 import deletePostImageSrc from "../../images/delete.svg";
@@ -8,6 +9,7 @@ import { deleteComment } from "../../utils/comments";
 
 function CommentActionButtons({ comment, setEditMode }) {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
   return (
     <div
       className="mb-1 d-flex justify-content-end"
@@ -32,7 +34,8 @@ function CommentActionButtons({ comment, setEditMode }) {
                   alert(err.message || err.msg);
                 },
                 user,
-                comment
+                comment,
+                navigate
               );
             }}
           />
@@ -56,16 +59,16 @@ export default function CommentItem({ comment }) {
           <CommentActionButtons comment={comment} setEditMode={setEditMode} />
           <h5>
             {comment.post.title && (
-              <a className="text-black" href={comment.post.url}>
+              <Link to={comment.post.url} className="text-black">
                 {comment.post.title}
-              </a>
+              </Link>
             )}
           </h5>
           <h5>
             {comment.author.name && (
-              <a className="text-black" href={comment.author.url}>
+              <Link to={comment.author.url} className="text-black">
                 {comment.author.name}
-              </a>
+              </Link>
             )}
           </h5>
           <h6>{comment.createdAt}</h6>

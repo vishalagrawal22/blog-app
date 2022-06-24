@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -16,9 +16,9 @@ export default function PostItem({ post }) {
       <h2 className="mb-3">{post.title}</h2>
       <h5 className="text-secondary mb-5">
         By{" "}
-        <a href={post.author.url} className="text-black">
+        <Link to={post.author.url} className="text-black">
           {post.author.name}
-        </a>{" "}
+        </Link>
         (Posted on {post.createdAt})
       </h5>
       <div className="w-100">

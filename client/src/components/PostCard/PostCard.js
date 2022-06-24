@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -47,7 +47,7 @@ function PostActionButtons({ post }) {
                 user,
                 post,
                 () => {
-                  window.location.reload();
+                  navigate(0);
                 }
               );
             }}
@@ -86,13 +86,13 @@ export default function PostCard({ post }) {
         </div>
         <div className="d-flex justify-content-center align-items-center mt-3">
           {post.author.name && (
-            <a href={post.author.url} className="card-link">
+            <Link to={post.author.url} className="card-link">
               View author
-            </a>
+            </Link>
           )}
-          <a href={post.url} className="card-link">
+          <Link to={post.url} className="card-link">
             View post
-          </a>
+          </Link>
         </div>
       </div>
     </div>

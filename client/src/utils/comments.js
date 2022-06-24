@@ -1,4 +1,10 @@
-export async function createComment(setErrors, user, postId, comment) {
+export async function createComment(
+  setErrors,
+  user,
+  postId,
+  comment,
+  navigate
+) {
   const headers = {
     "Content-Type": "application/json",
   };
@@ -19,7 +25,7 @@ export async function createComment(setErrors, user, postId, comment) {
     );
 
     if (response.ok) {
-      window.location.reload();
+      navigate(0);
     } else {
       const { errors } = await response.json();
       setErrors(errors);
@@ -33,7 +39,7 @@ export async function createComment(setErrors, user, postId, comment) {
   }
 }
 
-export async function updateComment(setErrors, user, comment) {
+export async function updateComment(setErrors, user, comment, navigate) {
   const headers = {
     "Content-Type": "application/json",
   };
@@ -54,7 +60,7 @@ export async function updateComment(setErrors, user, comment) {
     );
 
     if (response.ok) {
-      window.location.reload();
+      navigate(0);
     } else {
       const { errors } = await response.json();
       setErrors(errors);
@@ -68,7 +74,7 @@ export async function updateComment(setErrors, user, comment) {
   }
 }
 
-export async function deleteComment(setError, user, comment) {
+export async function deleteComment(setError, user, comment, navigate) {
   const headers = {};
 
   if (user) {
@@ -86,7 +92,7 @@ export async function deleteComment(setError, user, comment) {
     );
 
     if (response.ok) {
-      window.location.reload();
+      navigate(0);
     } else {
       const err = await response.json();
       setError(err);

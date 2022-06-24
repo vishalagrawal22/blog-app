@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import UserContext from "../../UserContext";
 
@@ -20,14 +20,14 @@ function AuthSection() {
     return (
       <ul className="nav">
         <li className="nav-item">
-          <a href="/login" className="btn btn-secondary me-3">
+          <Link to="/login" className="btn btn-secondary me-3">
             Login
-          </a>
+          </Link>
         </li>
         <li className="nav-item">
-          <a href="/register" className="btn btn-secondary">
+          <Link to="/register" className="btn btn-secondary">
             Register
-          </a>
+          </Link>
         </li>
       </ul>
     );
@@ -35,9 +35,9 @@ function AuthSection() {
     return (
       <ul className="nav">
         <li className="nav-item">
-          <a href={`/users/${user.id}`} className="fs-4 me-3 text-secondary">
+          <Link to={`/users/${user.id}`} className="fs-4 me-3 text-secondary">
             {user.name}
-          </a>
+          </Link>
         </li>
         <li className="nav-item">
           <button className="btn btn-secondary" onClick={handleLogout}>
@@ -54,9 +54,9 @@ export default function Header() {
   return (
     <header>
       <nav className="navbar navbar-light bg-light px-3">
-        <a href="/" className="fs-1 navbar-brand">
+        <Link to="/" className="fs-1 navbar-brand">
           Blog
-        </a>
+        </Link>
         {!isLoading && <AuthSection />}
       </nav>
     </header>
