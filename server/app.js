@@ -1,6 +1,5 @@
 const express = require("express");
 
-const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 const createHttpError = require("http-errors");
@@ -91,7 +90,6 @@ app.use(
   })
 );
 
-app.use(helmet());
 app.use(compression());
 app.use(morgan("dev"));
 

@@ -1,0 +1,13 @@
+{
+  "name": "blog-app",
+  "version": "1.0.0",
+  "description": "A simple multiuser blogging app",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd server && npm install",
+    "start": "node server/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
